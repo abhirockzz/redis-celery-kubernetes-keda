@@ -1,0 +1,20 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: redis-scaledobject
+  namespace: default
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: celery-worker
+  pollingInterval: 15
+  cooldownPeriod: 200
+  maxReplicaCount: 10
+  triggers:
+    - type: redis
+      metadata:
+        addressFromEnv: REDIS_HOST
+        passwordFromEnv: REDIS_PASSWORD
+        enableTLS: "true"
+        listName: celery
+        listLength: "10"
